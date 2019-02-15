@@ -70,10 +70,13 @@ It represent the product will be discounted by user group
 e.g While User A logined, each Matching Product by the discount rule will be discounted by default
 
 ##### Shopping Cart Discounte
-It represent the discount will apply finally on the whole purchase items, and the discount action will be Buy X quantity Get Y quantity Free depend on some specific conditions 
-The discount action will then look up each product the user pruchased, to see if it is match the condition and calculate the total 
+It represent the discount will apply finally on the whole purchase items
 
-e.g While User A purchase 8 Product P, while the  discount rule each Product P he purchased will be discounted
+The discount action will be Buy X quantity Get Y quantity Free depend on some specific conditions 
+
+The conditions will look up each pruchased, to see if it is matching and do the discount action
+
+e.g While User A purchase 8 Product P, while the dicsount rules is by 3 Product P Get 1 Product P Free, then there will be 2 Product P will be discounted
 
 
 ## Sample Data
