@@ -29,6 +29,17 @@ To execute with other aws profile, replace below "[my_profile_name]" with your a
 ```
 sh run.sh [my_profile_name]
 ```
+##output
+The setup script will output 2 items at the very bottom of the terminal
+
+e.g
+```
+--------------------------------------------Final Output-------------------------------------------
+Bucket URL For OAI Verify: https://s3-ap-southeast-1.amazonaws.com/frontend-frontendbucket-nyezyyaoqk9e/index.html
+Cloud Front URL For Verify(it may delay caused by the distribution of cloudfront): https://dpo3i83scsju1.cloudfront.net/
+```
+
+Please use **Cloud Front URL For Verify** to access the application, due to cloudfront DNS behaviour sometime, the cloudfront url may only work after 1 hour, so please be patient 
 
 # Application Usage
 
