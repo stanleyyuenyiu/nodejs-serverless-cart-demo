@@ -51,7 +51,7 @@ Please use **Cloud Front URL For Verify** to access the application, due to clou
 {"user": "UNILEVER", "password":"123456"}
 ```
 
-##Discount Rules
+## Discount Rules
 
 There are 3 major discount rules:
 
@@ -59,32 +59,32 @@ There are 3 major discount rules:
 - Product Group Price
 - Shopping Cart Discount
 
-###Product Tier Price
+### Product Tier Price
 It represent the discount by purchased quantity per product
 
 e.g While User A purchase 2 or more Product P, each Product P he purchased will be discounted
 
-###Product Group Price
+### Product Group Price
 It represent the product will be discounted by user group
 
 e.g While User A logined, each Matching Product by the discount rule will be discounted by default
 
-###Shopping Cart Discounte
+### Shopping Cart Discounte
 It represent the discount will apply finally on the whole purchase items, and the discount action will be Buy X quantity Get Y quantity Free depend on some specific conditions 
 The discount action will then look up each product the user pruchased, to see if it is match the condition and calculate the total 
 
 e.g While User A purchase 8 Product P, while the  discount rule each Product P he purchased will be discounted
 
 
-##Sample Data
+## Sample Data
 
 The sample data has imported by default while using the auto deployment script
 
 To find the sample data, please see [here](https://github.com/stanleyyuenyiu/simple-serverless-cart/tree/master/data)
 
-###Data Definition 
+### Data Definition 
 
-Data Table: ** _products**
+Data Table: ** _products **
 
 It mainly store the products information, each product information contains the product tier price discount rules, product group price discount rules
 Sample Data
@@ -115,7 +115,7 @@ Sample Data
 ```
 
 
-Data Table: ** _sales_rules**
+Data Table: ** _sales_rules **
 
 It mainly store the shopping cart discount rule information, each record contains the rule matching condtions and the discount action
 Sample Data
