@@ -1,4 +1,4 @@
-Please select either one of the deployment step (**Auto Deploy & Installation** or **Manual Deploy & Installation**) to deploy the application
+Please select either one of the deployment step to deploy the application
 
 # Auto Deploy & Installation
 
@@ -30,120 +30,114 @@ To execute with other aws profile, replace below "[my_profile_name]" with your a
 sh run.sh [my_profile_name]
 ```
 
+# Application Usage
 
-# Manual Deploy & Installation
+## Demo Login User
+```
+{"user": "FORD", "password":"123456"},
+{"user": "APPLE", "password":"123456"},
+{"user": "NIKE", "password":"123456"},
+{"user": "UNILEVER", "password":"123456"}
+```
 
-1. Clone the project from https://github.com/stanleyyuenyiu/simple-serverless-cart
-2. Export the cloned path var, replace {git cloned path} to the path where you clone the project
+##Discount Rules
+
+There are 3 major discount rules:
+
+- Product Tier Price
+- Product Group Price
+- Shopping Cart Discount
+
+###Product Tier Price
+It represent the discount by purchased quantity per product
+
+e.g While User A purchase 2 or more Product P, each Product P he purchased will be discounted
+
+###Product Group Price
+It represent the product will be discounted by user group
+
+e.g While User A logined, each Matching Product by the discount rule will be discounted by default
+
+###Shopping Cart Discounte
+It represent the discount will apply finally on the whole purchase items, and the discount action will be Buy X quantity Get Y quantity Free depend on some specific conditions 
+The discount action will then look up each product the user pruchased, to see if it is match the condition and calculate the total 
+
+e.g While User A purchase 8 Product P, while the  discount rule each Product P he purchased will be discounted
+
+
+##Sample Data
+
+The sample data has imported by default while using the auto deployment script
+
+To find the sample data, please see [here](https://github.com/stanleyyuenyiu/simple-serverless-cart/tree/master/data)
+
+###Data Definition 
+
+Data Table: ** _products**
+
+It mainly store the products information, each product information contains the product tier price discount rules, product group price discount rules
+Sample Data
 ```
-export GITClonedPath={git cloned path}
-```
-3. Create a S3 bucket and Upload the lambda source code to the S3 bucket
-```
-export AWS_DEFAULT_REGION=ap-southeast-1
-export S3Bucket=backendbucket-api
-aws s3 mb s3://$S3Bucket
-cd $GITClonedPath/backend/getProductsPrice && zip getProductsPrice.zip index.js
-cd $GITClonedPath/backend/getProducts && zip getProducts.zip index.js
-cd $GITClonedPath/backend/calTotal && zip calTotal.zip index.js
-aws s3 cp $GITClonedPath/backend/calTotal/calTotal.zip s3://$S3Bucket/calTotal.zip
-aws s3 cp $GITClonedPath/backend/getProducts/getProducts.zip s3://$S3Bucket/getProducts.zip 
-aws s3 cp $GITClonedPath/backend/getProductsPrice/getProductsPrice.zip s3://$S3Bucket/getProductsPrice.zip 
-```
-4. Create cloudformation stack
-```
-aws cloudformation create-stack --stack-name backend --template-body file://$GITClonedPath/cf/backend.json --capabilities CAPABILITY_IAM --parameters ParameterKey=S3Bucket,ParameterValue=$S3Bucket
-```
-5. Wait cloudformation stack finish
-```
-aws cloudformation wait stack-create-complete --stack-name backend
-```
-6. Grep the output of cloudformation stack
-```
-aws cloudformation describe-stacks --stack-name backend --query Stacks[0].Outputs
-```
-7. Expected output
-```
-[
+{
+  "group_price": [
     {
-        "OutputKey": "ApiBaseUrl",
-        "OutputValue": "https://14ej5gtezk.execute-api.ap-southeast-1.amazonaws.com/v1"
+      "group": "APPLE",
+      "price": 299.99
     },
     {
-        "OutputKey": "Region",
-        "OutputValue": "ap-southeast-1"
-    },
-    {
-        "OutputKey": "CognitoId",
-        "OutputValue": "ap-southeast-1:546214db-60ab-40c4-9a02-cdb4bdfb22ac"
-    },
-    {
-        "OutputKey": "ApiId",
-        "OutputValue": "14ej5gtezk"
+      "group": "FORD",
+      "price": 309.99
     }
-]
-```
-8.Open frontend configuration file -> $GITClonedPath/frontend/dist/config.js, update {ApiBaseUrl},{Region},{CognitoId} to "OutputValue" from above corresponding “OutputKey”
-```javascript
-var awsConfig = {
-	API:{
-		endpoints: [
-            {
-                name: "products",
-                endpoint: "{ApiBaseUrl}",
-                region: "{Region}"
-            },
-            {
-                name: "cart",
-                endpoint: "{ApiBaseUrl}",
-                region: "{Region}"
-            }
-        ]
-	},
-	Auth:{
-		identityPoolId: "{CognitoId}", 
-         	region: "{Region}"
-	}
+  ],
+  "name": "Standout Ad",
+  "price": 322.99,
+  "product_id": 2,
+  "sku": "standout",
+  "tier_price": [
+    {
+      "group": "NIKE",
+      "price": 379.99,
+      "qty": "4"
+    }
+  ]
 }
 ```
-9. Create cloudformation stack for frontend
+
+
+Data Table: ** _sales_rules**
+
+It mainly store the shopping cart discount rule information, each record contains the rule matching condtions and the discount action
+Sample Data
 ```
-aws cloudformation create-stack --stack-name frontend --template-body file://$GITClonedPath/cf/frontend.json --capabilities CAPABILITY_IAM 
-```
-10. Wait cloudformation stack finish
-```
-aws cloudformation wait stack-create-complete --stack-name frontend
-```
-11. Grep the output of cloudformation stack
-```
-aws cloudformation describe-stacks --stack-name frontend --query Stacks[0].Outputs
-```
-12. Expected output
-```
-[
+{
+  "action": {
+    "conditions": [
+      {
+        "entity": "sku",
+        "operation": "eq",
+        "value": "classic"
+      }
+    ],
+    "discount": 1,
+    "discount_step": 5,
+    "type": "buy_x_get_y"
+  },
+  "conditions": [
     {
-        "OutputKey": "BucketUrlForOAIVerify",
-        "OutputValue": "https://s3-ap-southeast-1.amazonaws.com/frontend-frontendbucket-9zdf7nn66utp/index.html"
-    },
-    {
-        "OutputKey": "BucketName",
-        "OutputValue": "frontend-frontendbucket-9zdf7nn66utp"
-    },
-    {
-        "OutputKey": "CloudFrontUrl",
-        "OutputValue": "https://ddcbus9dh2gvn.cloudfront.net/index.html"
-    },
-    {
-        "OutputKey": "CloudFrontId",
-        "OutputValue": "EDK6SJ05GH29V"
+      "entity": "customer_group",
+      "operation": "eq",
+      "value": "FORD"
     }
-]
+  ],
+  "name": "rule_B",
+  "rule_id": 2
+}
 ```
-13. Upload files to S3, update {BucketName} to "OutputValue" from above corresponding “OutputKey”
-```
-export S3BucketFrontend={BucketName}
-aws s3 cp $GITClonedPath/frontend/dist/index.html s3://$S3BucketFrontend/index.html
-aws s3 cp $GITClonedPath/frontend/dist/config.js s3://$S3BucketFrontend/config.js
-aws s3 cp $GITClonedPath/frontend/dist/build.js s3://$S3BucketFrontend/build.js
-```
-14.	Open browser and enter {CloudFrontUrl} to verify the application, open browser and enter {BucketUrlForOAIVerify} to verify the OAI restrict access of the S3
+
+
+
+
+
+
+
+
