@@ -5,15 +5,55 @@
     "S3Bucket": {
       "Description": "The name of the S3 bucket that contains the source code of your Lambda function.",
       "Type": "String"
-    },
-    "S3Key": {
-      "Description": "The location and name of your source code .zip file.",
-      "Type": "String",
-      "Default": "ipdetection.zip"
     }
   },
   "Resources": {
+    "ProductsDB": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "product_id",
+            "AttributeType": "N"
+          }
+        ],
+        "ProvisionedThroughput":{
+          "ReadCapacityUnits" : 5,
+          "WriteCapacityUnits" : 5
+        },
+        "KeySchema": [
+          {
+            "AttributeName": "product_id",
+            "KeyType": "HASH"
+          }
+        ],
+        "TableName" : "_products"
+      }
+    },
     
+    "SaleDB": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "rule_id",
+            "AttributeType": "N"
+          }
+        ],
+        "ProvisionedThroughput":{
+          "ReadCapacityUnits" : 5,
+          "WriteCapacityUnits" : 5
+        },
+        "KeySchema": [
+          {
+            "AttributeName": "rule_id",
+            "KeyType": "HASH"
+          }
+        ],
+        "TableName" : "_sales_rules"
+      }
+    },
+   
     "LambdaRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
@@ -43,7 +83,7 @@
           }
         },
         {
-          "PolicyName": "db",
+          "PolicyName": "dbRead",
           "PolicyDocument": {
             "Version": "2012-10-17",
             "Statement": [
@@ -137,7 +177,7 @@
         "Timeout": 15,
         "Environment": {
           "Variables": {
-            "TABLE_NAME": "products",
+            "TABLE_NAME": { "Ref": "ProductsDB" },
             "INVOKE_FUNCTION": {"Ref": "GetProductPriceLambda" }
           }
         }
@@ -175,8 +215,8 @@
         "Timeout": 15,
         "Environment": {
           "Variables": {
-            "TABLE_NAME_RULES": "sales_rules",
-            "TABLE_NAME_PRODUCT":"products",
+            "TABLE_NAME_RULES": { "Ref": "SaleDB" },
+            "TABLE_NAME_PRODUCT":{ "Ref": "ProductsDB" },
             "INVOKE_FUNCTION": {"Ref": "GetProductPriceLambda" }
           }
         }
@@ -458,9 +498,9 @@
           "unauthenticated": { "Fn::GetAtt": ["CognitoIdPoolRoleUnAuth", "Arn"]}
         }
       }
-    },
-
-    "Outputs": {
+    }
+  },
+  "Outputs": {
       "ApiId": {
         "Value": {"Ref": "RestApi"}
       },
@@ -473,6 +513,5 @@
       "Region": {
         "Value": {"Ref": "AWS::Region"}
       }
-    }
   }
 }

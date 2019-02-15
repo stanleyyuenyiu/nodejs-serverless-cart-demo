@@ -38,6 +38,14 @@ echo "--------------------------------------------------------------------------
 echo "Wait cloudformation stack finish..."
 echo "---------------------------------------------------------------------------------------------------"
 aws cloudformation wait stack-create-complete --stack-name backend --profile=$profile
+
+
+echo "---------------------------------------------------------------------------------------------------"
+echo "Insert demo data to Database"
+echo "---------------------------------------------------------------------------------------------------"
+aws dynamodb batch-write-item --request-items file://$GITClonedPath/data/products.json --profile=$profile
+aws dynamodb batch-write-item --request-items file://$GITClonedPath/data/sales.json --profile=$profile
+
 echo "---------------------------------------------------------------------------------------------------"
 echo "Apply cloudformation output to frontend config..."
 echo "---------------------------------------------------------------------------------------------------"

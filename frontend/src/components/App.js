@@ -9,6 +9,9 @@ import { compose } from 'redux';
 const App = props => (
         <div>
         	<Switch>
+                <Route exact path="/index.html">
+                        <Main/>
+                </Route>
                 <Route exact path="/">
                         <Main/>
                 </Route>

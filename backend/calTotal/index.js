@@ -112,7 +112,7 @@ function getProducts(query,group,qtys, callback){
 		}else{
 
 		    lambda.invoke({
-              FunctionName: process.env.INVOKE_FUNCTION,,
+              FunctionName: process.env.INVOKE_FUNCTION,
               Payload: JSON.stringify({"items":data.Items, "group":group, "qtys":qtys}, null, 2) // pass params
             }, function(e, d) {
                 		 
