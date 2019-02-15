@@ -1,5 +1,3 @@
-Please select either one of the deployment step to deploy the application
-
 # Auto Deploy & Installation
 
 ## prerequisite
@@ -29,7 +27,8 @@ To execute with other aws profile, replace below "[my_profile_name]" with your a
 ```
 sh run.sh [my_profile_name]
 ```
-##output
+
+## Output
 The setup script will output 2 items at the very bottom of the terminal
 
 e.g
@@ -59,17 +58,17 @@ There are 3 major discount rules:
 - Product Group Price
 - Shopping Cart Discount
 
-##### Product Tier Price
+#### Product Tier Price
 It represent the discount by purchased quantity per product
 
 e.g While User A purchase 2 or more Product P, each Product P he purchased will be discounted
 
-##### Product Group Price
+#### Product Group Price
 It represent the product will be discounted by user group
 
 e.g While User A logined, each Matching Product by the discount rule will be discounted by default
 
-##### Shopping Cart Discounte
+#### Shopping Cart Discounte
 It represent the discount will apply finally on the whole purchase items
 
 The discount action will be Buy X quantity Get Y quantity Free depend on some specific conditions 
@@ -85,7 +84,7 @@ The sample data has imported by default while using the auto deployment script
 
 To find the sample data, please see [here](https://github.com/stanleyyuenyiu/simple-serverless-cart/tree/master/data)
 
-##### Data Definition 
+#### Data Definition 
 
 Data Table: ** _products **
 
